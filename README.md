@@ -4,6 +4,8 @@
 
 **Локальный SMTP сервер для тестирования email с веб-интерфейсом**
 
+[![CI](https://github.com/zhandos717/mailfake/actions/workflows/ci.yml/badge.svg)](https://github.com/zhandos717/mailfake/actions/workflows/ci.yml)
+[![Release](https://github.com/zhandos717/mailfake/actions/workflows/release.yml/badge.svg)](https://github.com/zhandos717/mailfake/actions/workflows/release.yml)
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?style=flat&logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://www.docker.com/)
