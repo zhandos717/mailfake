@@ -56,12 +56,14 @@ func (s *Server) indexHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("q")
 	emails := s.store.Search(query)
 
-	tmpl.Execute(w, map[string]interface{}{
+	if err := tmpl.Execute(w, map[string]interface{}{
 		"Emails": emails,
 		"Count":  len(emails),
 		"Total":  s.store.Count(),
 		"Query":  query,
-	})
+	}); err != nil {
+		log.Printf("Template execute error: %v", err)
+	}
 }
 
 func (s *Server) emailHandler(w http.ResponseWriter, r *http.Request) {
@@ -83,7 +85,9 @@ func (s *Server) emailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl.Execute(w, email)
+	if err := tmpl.Execute(w, email); err != nil {
+		log.Printf("Template execute error: %v", err)
+	}
 }
 
 func (s *Server) htmlHandler(w http.ResponseWriter, r *http.Request) {
@@ -101,16 +105,15 @@ func (s *Server) htmlHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if email.HTMLBody != "" {
-		w.Write([]byte(email.HTMLBody))
+		_, _ = w.Write([]byte(email.HTMLBody))
 	} else {
-		// Обернём текст в базовый HTML
-		w.Write([]byte("<html><body><pre style=\"font-family: sans-serif; white-space: pre-wrap;\">" + email.TextBody + "</pre></body></html>"))
+		_, _ = w.Write([]byte("<html><body><pre style=\"font-family: sans-serif; white-space: pre-wrap;\">" + email.TextBody + "</pre></body></html>"))
 	}
 }
 
 func (s *Server) apiEmailsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(s.store.GetAll())
+	_ = json.NewEncoder(w).Encode(s.store.GetAll())
 }
 
 func (s *Server) apiDeleteHandler(w http.ResponseWriter, r *http.Request) {
@@ -127,7 +130,7 @@ func (s *Server) apiDeleteHandler(w http.ResponseWriter, r *http.Request) {
 
 	if s.store.Delete(id) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+		_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 	} else {
 		http.Error(w, "Email not found", http.StatusNotFound)
 	}
@@ -140,5 +143,5 @@ func (s *Server) apiClearHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	s.store.Clear()
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+	_ = json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 }
