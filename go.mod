@@ -1,4 +1,4 @@
-module fake-mail
+module github.com/zhandos717/mailfake
 
 go 1.25
 

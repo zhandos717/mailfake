@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	"fake-mail/internal/store"
+	"github.com/zhandos717/mailfake/internal/store"
 )
 
 //go:embed templates/*

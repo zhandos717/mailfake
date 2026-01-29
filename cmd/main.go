@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"fake-mail/internal/smtp"
-	"fake-mail/internal/store"
-	"fake-mail/internal/web"
+	"github.com/zhandos717/mailfake/internal/smtp"
+	"github.com/zhandos717/mailfake/internal/store"
+	"github.com/zhandos717/mailfake/internal/web"
 )
 
 func main() {

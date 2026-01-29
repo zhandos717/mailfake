@@ -1,7 +1,7 @@
 services:
-  fake-mail:
+  mailfake:
     build: .
-    container_name: fake-mail
+    container_name: mailfake
     ports:
       - "1025:1025"   # SMTP
       - "8025:8025"   # Web UI

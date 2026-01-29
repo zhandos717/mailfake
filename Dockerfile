@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fake-mail ./cmd
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o mailfake ./cmd
 
 FROM alpine:3.19
 
@@ -15,8 +15,8 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /app
 
-COPY --from=builder /app/fake-mail .
+COPY --from=builder /app/mailfake .
 
 EXPOSE 1025 8025
 
-CMD ["./fake-mail"]
+CMD ["./mailfake"]

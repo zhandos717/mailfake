@@ -10,7 +10,7 @@ import (
 	"net/mail"
 	"strings"
 
-	"fake-mail/internal/store"
+	"github.com/zhandos717/mailfake/internal/store"
 
 	"github.com/emersion/go-smtp"
 )

@@ -1,6 +1,6 @@
 .PHONY: build run clean test fmt lint
 
-APP_NAME := fake-mail
+APP_NAME := mailfake
 BUILD_DIR := bin
 
 build:
