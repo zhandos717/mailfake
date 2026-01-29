@@ -1,37 +1,37 @@
 # Fake Mail
 
-Простой SMTP сервер для тестирования отправки email из Laravel приложений с веб-интерфейсом.
+Локальный SMTP сервер для тестирования отправки email с веб-интерфейсом. Альтернатива Mailhog/Mailtrap.
 
 ## Возможности
 
-- SMTP сервер на порту `1025`
-- Веб-интерфейс на порту `8025`
-- Просмотр всех полученных писем
-- Просмотр raw данных письма
-- Удаление отдельных писем и очистка всех
-- REST API для интеграции
-- Автообновление списка каждые 5 секунд
+- SMTP сервер без аутентификации
+- Веб-интерфейс для просмотра писем
+- Поддержка HTML и текстовых писем
+- Поиск по адресам и теме
+- REST API
+- Копирование конфига одним кликом
 
-## Установка и запуск
+## Запуск
 
 ```bash
-# Клонировать или перейти в директорию
-cd fake-mail
+# Через go run
+go run ./cmd
 
-# Установить зависимости
-go mod tidy
+# Или через make
+make run
 
-# Запустить
-go run main.go
+# Или собрать и запустить
+make build
+./bin/fake-mail
 ```
 
 После запуска:
-- SMTP сервер: `localhost:1025`
-- Веб-интерфейс: http://localhost:8025
+- **SMTP**: `localhost:1025`
+- **Web**: http://localhost:8025
 
-## Настройка Laravel
+## Настройка
 
-В файле `.env` вашего Laravel приложения:
+### Laravel
 
 ```env
 MAIL_MAILER=smtp
@@ -40,81 +40,119 @@ MAIL_PORT=1025
 MAIL_USERNAME=null
 MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
-MAIL_FROM_ADDRESS="test@example.com"
-MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-## Пример отправки email в Laravel
+### Django
 
-```php
-use Illuminate\Support\Facades\Mail;
+```python
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '127.0.0.1'
+EMAIL_PORT = 1025
+EMAIL_USE_TLS = False
+```
 
-// Простая отправка
-Mail::raw('Текст письма', function ($message) {
-    $message->to('user@example.com')
-            ->subject('Тестовое письмо');
+### Node.js (Nodemailer)
+
+```javascript
+const transporter = nodemailer.createTransport({
+  host: '127.0.0.1',
+  port: 1025,
+  secure: false,
 });
-
-// Через Mailable
-Mail::to('user@example.com')->send(new WelcomeMail());
 ```
 
-Или через Artisan Tinker:
+### Ruby on Rails
 
-```bash
-php artisan tinker
->>> Mail::raw('Test', fn($m) => $m->to('test@test.com')->subject('Hello'));
+```ruby
+# config/environments/development.rb
+config.action_mailer.delivery_method = :smtp
+config.action_mailer.smtp_settings = {
+  address: '127.0.0.1',
+  port: 1025
+}
+```
+
+### Go
+
+```go
+import "net/smtp"
+
+smtp.SendMail("127.0.0.1:1025", nil, "from@test.com",
+    []string{"to@test.com"}, []byte(message))
+```
+
+### Python
+
+```python
+import smtplib
+
+with smtplib.SMTP('127.0.0.1', 1025) as server:
+    server.sendmail('from@test.com', 'to@test.com', message)
+```
+
+### Symfony
+
+```yaml
+# config/packages/mailer.yaml
+framework:
+  mailer:
+    dsn: 'smtp://127.0.0.1:1025'
+```
+
+### Spring Boot
+
+```properties
+# application.properties
+spring.mail.host=127.0.0.1
+spring.mail.port=1025
 ```
 
 ## API
 
 | Метод | URL | Описание |
 |-------|-----|----------|
-| GET | `/api/emails` | Получить все письма (JSON) |
+| GET | `/` | Веб-интерфейс |
+| GET | `/?q=search` | Поиск писем |
+| GET | `/api/emails` | Список писем (JSON) |
+| GET | `/html/{id}` | HTML контент письма |
 | DELETE | `/api/emails/{id}` | Удалить письмо |
-| POST | `/api/clear` | Удалить все письма |
+| POST | `/api/clear` | Очистить все |
 
-### Примеры использования API
+## Структура проекта
 
-```bash
-# Получить все письма
-curl http://localhost:8025/api/emails
-
-# Удалить письмо с ID 1
-curl -X DELETE http://localhost:8025/api/emails/1
-
-# Очистить все письма
-curl -X POST http://localhost:8025/api/clear
+```
+fake-mail/
+├── cmd/
+│   └── main.go
+├── internal/
+│   ├── smtp/
+│   │   └── server.go
+│   ├── store/
+│   │   └── store.go
+│   └── web/
+│       ├── server.go
+│       └── templates/
+├── Makefile
+└── README.md
 ```
 
-## Сборка бинарника
+## Make команды
 
 ```bash
-go build -o fake-mail .
-./fake-mail
+make build       # Сборка
+make run         # Запуск
+make clean       # Очистка
+make build-all   # Сборка для Linux/Mac/Windows
 ```
 
-## Docker (опционально)
-
-Создайте `Dockerfile`:
-
-```dockerfile
-FROM golang:1.21-alpine AS builder
-WORKDIR /app
-COPY . .
-RUN go build -o fake-mail .
-
-FROM alpine:latest
-WORKDIR /app
-COPY --from=builder /app/fake-mail .
-COPY --from=builder /app/templates ./templates
-EXPOSE 1025 8025
-CMD ["./fake-mail"]
-```
-
-Запуск:
+## Docker
 
 ```bash
+# Docker Compose
+docker-compose up -d
+
+# Или вручную
 docker build -t fake-mail .
 docker run -p 1025:1025 -p 8025:8025 fake-mail
 ```

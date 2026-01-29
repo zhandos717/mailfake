@@ -5,18 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{if .Subject}}{{.Subject}}{{else}}(No Subject){{end}} - Fake Mail</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
             min-height: 100vh;
         }
-
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -25,77 +19,29 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-        }
-
+        .header h1 { font-size: 24px; }
         .header a {
             color: white;
             text-decoration: none;
             padding: 8px 16px;
             background: rgba(255,255,255,0.2);
             border-radius: 6px;
-            transition: background 0.2s;
         }
-
-        .header a:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
+        .header a:hover { background: rgba(255,255,255,0.3); }
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
         .email-card {
             background: white;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             overflow: hidden;
         }
-
-        .email-header {
-            padding: 25px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .email-subject {
-            font-size: 22px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .email-meta {
-            display: grid;
-            gap: 10px;
-        }
-
-        .meta-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .meta-label {
-            color: #999;
-            font-size: 14px;
-            min-width: 60px;
-        }
-
-        .meta-value {
-            color: #333;
-            font-size: 14px;
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid #eee;
-            background: #fafafa;
-        }
-
+        .email-header { padding: 25px; border-bottom: 1px solid #eee; }
+        .email-subject { font-size: 22px; font-weight: 600; color: #333; margin-bottom: 20px; }
+        .email-meta { display: grid; gap: 10px; }
+        .meta-row { display: flex; gap: 10px; }
+        .meta-label { color: #999; font-size: 14px; min-width: 60px; }
+        .meta-value { color: #333; font-size: 14px; }
+        .tabs { display: flex; border-bottom: 1px solid #eee; background: #fafafa; }
         .tab {
             padding: 15px 25px;
             cursor: pointer;
@@ -103,56 +49,38 @@
             font-size: 14px;
             font-weight: 500;
             color: #666;
-            transition: all 0.2s;
         }
-
-        .tab:hover {
-            color: #667eea;
-        }
-
-        .tab.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
+        .tab:hover { color: #667eea; }
+        .tab.active { color: #667eea; border-bottom-color: #667eea; background: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .email-frame {
+            width: 100%;
+            min-height: 500px;
+            border: none;
             background: white;
         }
-
-        .tab-content {
-            display: none;
+        .text-body {
             padding: 25px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .email-body {
             white-space: pre-wrap;
-            font-family: inherit;
             line-height: 1.6;
             color: #333;
+            font-family: sans-serif;
         }
-
         .raw-content {
             background: #f8f9fa;
             padding: 20px;
+            margin: 20px;
             border-radius: 6px;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 13px;
-            line-height: 1.5;
+            font-family: monospace;
+            font-size: 12px;
             white-space: pre-wrap;
             word-break: break-all;
-            color: #495057;
             max-height: 500px;
             overflow-y: auto;
+            color: #495057;
         }
-
-        .actions {
-            padding: 20px 25px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-        }
-
+        .actions { padding: 20px 25px; border-top: 1px solid #eee; display: flex; gap: 10px; }
         .btn {
             padding: 10px 20px;
             border: none;
@@ -160,27 +88,21 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.2s;
         }
-
-        .btn-delete {
-            background: #e74c3c;
-            color: white;
+        .btn-delete { background: #e74c3c; color: white; }
+        .btn-delete:hover { background: #c0392b; }
+        .btn-back { background: #6c757d; color: white; text-decoration: none; }
+        .btn-back:hover { background: #5a6268; }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
         }
-
-        .btn-delete:hover {
-            background: #c0392b;
-        }
-
-        .btn-back {
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-        }
-
-        .btn-back:hover {
-            background: #5a6268;
-        }
+        .badge-html { background: #e8f5e9; color: #2e7d32; }
+        .badge-text { background: #e3f2fd; color: #1565c0; }
     </style>
 </head>
 <body>
@@ -188,11 +110,13 @@
         <h1>Fake Mail</h1>
         <a href="/">← Back to Inbox</a>
     </div>
-
     <div class="container">
         <div class="email-card">
             <div class="email-header">
-                <h2 class="email-subject">{{if .Subject}}{{.Subject}}{{else}}(No Subject){{end}}</h2>
+                <h2 class="email-subject">
+                    {{if .Subject}}{{.Subject}}{{else}}(No Subject){{end}}
+                    {{if .HasHTML}}<span class="badge badge-html">HTML</span>{{else}}<span class="badge badge-text">TEXT</span>{{end}}
+                </h2>
                 <div class="email-meta">
                     <div class="meta-row">
                         <span class="meta-label">From:</span>
@@ -208,40 +132,40 @@
                     </div>
                 </div>
             </div>
-
             <div class="tabs">
-                <div class="tab active" onclick="showTab('body')">Body</div>
-                <div class="tab" onclick="showTab('raw')">Raw Source</div>
+                <div class="tab active" data-tab="preview">Preview</div>
+                {{if .TextBody}}<div class="tab" data-tab="text">Text</div>{{end}}
+                <div class="tab" data-tab="raw">Raw Source</div>
             </div>
-
-            <div id="tab-body" class="tab-content active">
-                <div class="email-body">{{.Body}}</div>
+            <div id="tab-preview" class="tab-content active">
+                <iframe class="email-frame" src="/html/{{.ID}}" sandbox="allow-same-origin"></iframe>
             </div>
-
+            {{if .TextBody}}
+            <div id="tab-text" class="tab-content">
+                <div class="text-body">{{.TextBody}}</div>
+            </div>
+            {{end}}
             <div id="tab-raw" class="tab-content">
                 <pre class="raw-content">{{.RawData}}</pre>
             </div>
-
             <div class="actions">
                 <a href="/" class="btn btn-back">← Back</a>
                 <button class="btn btn-delete" onclick="deleteEmail()">Delete</button>
             </div>
         </div>
     </div>
-
     <script>
-        function showTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-
-            event.target.classList.add('active');
-            document.getElementById('tab-' + tabName).classList.add('active');
-        }
-
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            });
+        });
         function deleteEmail() {
             if (confirm('Delete this email?')) {
-                fetch('/api/emails/{{.ID}}', { method: 'DELETE' })
-                    .then(() => window.location.href = '/');
+                fetch('/api/emails/{{.ID}}', { method: 'DELETE' }).then(() => location.href = '/');
             }
         }
     </script>
