@@ -1,6 +1,6 @@
 module github.com/zhandos717/mailfake
 
-go 1.25
+go 1.23
 
 require github.com/emersion/go-smtp v0.24.0
 
